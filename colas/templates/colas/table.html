@@ -1,0 +1,238 @@
+<!--Tabla de los numeros generados-->
+<!--var: numbers, max-->
+
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+
+<style>
+    .tableFixHead { overflow-y: 0px; height: 800px; }
+    .tableFixHead thead th { position: sticky; top: 0px; }
+
+    .tableFixHead,
+    .tableFixHead td {
+    box-shadow: inset 1px -1px #D3D3D3;
+    }
+    .tableFixHead th {
+    box-shadow: inset 1px 1px #000, 0 1px #000;
+    }
+    .tableFixHead tr {
+ top: 120px;
+    }
+</style>
+<!--Ejemplo de la tabla que se ocultaria-->
+<a class="bg-primary" id="a" style="display:none">aa</a>
+
+<!--<a class="btn btn-sm btn-secondary" href="javascript:mostrar();void0">Mostrar todo</a>-->
+<!--<a class="btn btn-sm btn-secondary" href="javascript:ocultar();void0">Ocultar</a>-->
+
+{% if tabla %}
+
+<table class="table table-sm text-center table-responsive table-striped tableFixHead ">
+    <thead class="thead-dark m-auto" id="table.demo1">
+    <tr class="h5">
+        <th colspan="1" rowspan="3" class="table-info">Evento</th>
+        <th colspan="1" rowspan="3" class="table-info">Reloj</th>
+        <th colspan="7" rowspan="2" class="table-info">llegada_llamada_interna</th>
+        <th colspan="7" rowspan="2" class="table-info">llegada_llamada_externa</th>
+        <th colspan="2" rowspan="2" class="table-info">LLamada</th>
+        <th colspan="1" rowspan="3" class="table-info">Fin LLamada</th>
+        <th colspan="{{llamadas_internas|length}}" rowspan="2" class="table-info">fin_llamada_interna (i)</th>
+        <th colspan="{{llamadas_externas|length}}" rowspan="2" class="table-info">fin_llamada_externa (i)</th>
+
+        <th colspan="4" rowspan="1" class="table-info">Estadisticas</th>
+        <th colspan="10" rowspan="1" class="table-info">Internos</th>
+        <th colspan="3" rowspan="1" class="table-info">Lineas Externas</th>
+
+        <th colspan="{{llamadas_internas|length}}" rowspan="1" class="table-info">Llamadas internas</th>
+        <th colspan="{{llamadas_externas|length}}" rowspan="1" class="table-info">Llamadas externas</th>
+
+    </tr>
+    <tr style="{top: 120px}">
+        <th rowspan="1" colspan="2" class="table-primary">LLamadas perdidas</th>
+        <th rowspan="1" colspan="2" class="table-primary">LLamadas totales</th>
+
+        {% with ''|center:10 as range %}
+        {% for _ in range %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">{{ forloop.counter }}</th>
+        {% endfor %}
+        {% endwith %}
+
+        {% with ''|center:3 as range %}
+        {% for _ in range %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">{{ forloop.counter }}</th>
+        {% endfor %}
+        {% endwith %}
+
+        <!-- LLamadas internas -->
+        {% for llamada in llamadas_internas %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">{{ llamada }}</th>
+        {% endfor %}
+
+        <!-- LLamadas internas -->
+        {% for llamada in llamadas_externas %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">{{ llamada }}</th>
+        {% endfor %}
+
+
+    </tr>
+    <tr class="th-2">
+        <th  rowspan="1" colspan="1" scope="col" class="table-primary th-3">RND</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">tiempo llegada</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">proxima llegada</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">RND</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Duracion</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">RND</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Interno de origen</th>
+
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">RND</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">tiempo llegada</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">proxima llegada</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">RND</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Duracion</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">RND</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Linea externa</th>
+
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">RND</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Interno de destino</th>
+
+        <!-- LLamadas internas -->
+        {% for llamada in llamadas_internas %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">&nbsp&nbsp&nbsp&nbsp{{ llamada }}&nbsp&nbsp&nbsp&nbsp</th>
+        {% endfor %}
+
+        <!-- LLamadas internas -->
+        {% for llamada in llamadas_externas %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">&nbsp&nbsp&nbsp&nbsp{{ llamada }}&nbsp&nbsp&nbsp&nbsp</th>
+        {% endfor %}
+
+
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Perdidas Internas</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Perdidas Externas</th>
+
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Totales Internas</th>
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Totales Externas</th>
+
+        {% with ''|center:10 as range %}
+        {% for _ in range %}
+            <th rowspan="1" colspan="1" scope="col" class="table-primary">Estado ({{ forloop.counter }})</th>
+        {% endfor %}
+        {% endwith %}
+
+        {% with ''|center:3 as range %}
+        {% for _ in range %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Estado ({{ forloop.counter }})</th>
+
+        {% endfor %}
+        {% endwith %}
+
+        <!-- LLamadas internas -->
+        {% for llamada in llamadas_internas %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Estado ({{ llamada }})</th>
+        {% endfor %}
+
+        <!-- LLamadas internas -->
+        {% for llamada in llamadas_externas %}
+        <th rowspan="1" colspan="1" scope="col" class="table-primary">Estado ({{ llamada }})</th>
+        {% endfor %}
+
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for linea in tabla %}
+    <tr>
+        <td>{{linea.evento}}</td>
+        <td>{{linea.reloj}}</td>
+
+        <td>{{linea.rnd_tiempo_llegada_int}}</td>
+        <td>{{linea.tiempo_llegada_int}}</td>
+        <td>{{linea.proxima_llegada_int}}</td>
+        <td>{{linea.rnd_duracion_int}}</td>
+        <td>{{linea.duracion_int}}</td>
+        <td>{{linea.rnd_interno_origen}}</td>
+        <td>{{linea.interno_origen}}</td>
+
+        <td>{{linea.rnd_tiempo_llegada_ext}}</td>
+        <td>{{linea.tiempo_llegada_ext}}</td>
+        <td>{{linea.proxima_llegada_ext}}</td>
+        <td>{{linea.rnd_duracion_ext}}</td>
+        <td>{{linea.duracion_ext}}</td>
+        <td>{{linea.rnd_linea_externa}}</td>
+        <td>{{linea.linea_externa}}</td>
+
+        <td>{{linea.rnd_interno_destino}}</td>
+        <td>{{linea.interno_destino}}</td>
+
+        <td>{{linea.fin_llamada}}</td>
+
+        <!-- Fin llamada interna -->
+        {% for llamada in llamadas_internas %}
+        {% if linea.fin_llamada_interna|get_dict_value:llamada == "perdida" %}
+        <td class="table-danger"></td>
+        {% elif linea.fin_llamada_interna|get_dict_value:llamada == "finalizado" %}
+        <td class="table-success"></td>
+        {% else %}
+        <td>{{linea.fin_llamada_interna|get_dict_value:llamada}}</td>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Fin llamada externa -->
+        {% for llamada in llamadas_externas %}
+        {% if linea.fin_llamada_externa|get_dict_value:llamada == "perdida" %}
+        <td class="table-danger"></td>
+        {% elif linea.fin_llamada_externa|get_dict_value:llamada == "finalizado" %}
+        <td class="table-success"></td>
+        {% else %}
+        <td>{{linea.fin_llamada_externa|get_dict_value:llamada}}</td>
+        {% endif %}
+        {% endfor %}
+
+        <td>{{linea.llamadas_int_perdidas}}</td>
+        <td>{{linea.llamadas_ext_perdidas}}</td>
+        <td>{{linea.num_llamada_int_total}}</td>
+        <td>{{linea.num_llamada_ext_total}}</td>
+
+        {% for estado in linea.estado_int %}
+        <td>{{estado}}</td>
+        {% endfor %}
+
+        {% for estado in linea.estado_ext %}
+        <td>{{estado}}</td>
+        {% endfor %}
+
+        <!-- LLamadas internas -->
+        {% for llamada in llamadas_internas %}
+        {% if linea.estado_llamada_int|get_dict_value:llamada == "perdida" %}
+        <td class="table-danger"></td>
+        {% elif linea.estado_llamada_int|get_dict_value:llamada == "finalizado" %}
+        <td class="table-success"></td>
+        {% else %}
+        <td>{{linea.estado_llamada_int|get_dict_value:llamada}}</td>
+        {% endif %}
+        {% endfor %}
+
+        <!-- LLamadas externas -->
+        {% for llamada in llamadas_externas %}
+        {% if linea.estado_llamada_ext|get_dict_value:llamada == "perdida" %}
+        <td class="table-danger"></td>
+        {% else %}
+        <td>{{linea.estado_llamada_ext|get_dict_value:llamada}}</td>
+        {% endif %}
+        {% endfor %}
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endif %}
+<script>
+function ocultar(){
+document.getElementById('tabla1').style.display = 'none';
+document.getElementById('a').style.display = 'inline';
+}
+function mostrar(){
+document.getElementById('tabla1').style.display = 'block';
+document.getElementById('a').style.display = 'none';
+}
+</script>
