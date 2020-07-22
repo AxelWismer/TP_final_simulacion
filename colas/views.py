@@ -40,7 +40,19 @@ class Colas(generic.FormView):
         sim.simular()
 
         # Se realizan las simulaciones requeridas
-
+        if sim.num_llamada_int_total > 0:
+            porc_int = round((sim.llamadas_int_perdidas / sim.num_llamada_int_total) * 100, 4)
+        else:
+            porc_int = 0
+        if sim.num_llamada_ext_total > 0:
+            porc_ext = round((sim.llamadas_ext_perdidas / sim.num_llamada_ext_total) * 100, 4)
+        else:
+            porc_ext = 0
+        if (sim.num_llamada_int_total + sim.num_llamada_ext_total) > 0:
+            porc_total = round(((sim.llamadas_int_perdidas + sim.llamadas_ext_perdidas) /
+                   (sim.num_llamada_int_total + sim.num_llamada_ext_total)) * 100, 4)
+        else:
+            porc_total = 0
         context = {
             'tabla': sim.iteraciones,
             'form': form,
@@ -50,12 +62,11 @@ class Colas(generic.FormView):
             'perdidas_ext': sim.llamadas_ext_perdidas,
             'totales_int': sim.num_llamada_int_total,
             'totales_ext': sim.num_llamada_ext_total,
-            'porc_int': round((sim.llamadas_int_perdidas / sim.num_llamada_int_total) * 100, 4),
-            'porc_ext': round((sim.llamadas_ext_perdidas / sim.num_llamada_ext_total) * 100, 4),
+            'porc_int': porc_int,
+            'porc_ext': porc_ext,
             'llamadas_total': sim.num_llamada_int_total + sim.num_llamada_ext_total,
             'perdidas_total': sim.llamadas_int_perdidas + sim.llamadas_ext_perdidas,
-            'porc_total': round(((sim.llamadas_int_perdidas + sim.llamadas_ext_perdidas) /
-                                (sim.num_llamada_int_total + sim.num_llamada_ext_total)) * 100, 4)
+            'porc_total': porc_total,
         }
 
         # tabla.insert(len(it.tabla), {})
