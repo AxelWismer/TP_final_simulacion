@@ -20,10 +20,10 @@ class ParametersForm_viejo(forms.Form):
         self.helper.form_tag = False
 
 class ParametersForm(forms.Form):
-    desde = forms.IntegerField(label='minuto de inicio (j)', initial=0, min_value=0)
+    desde = forms.FloatField(label='minuto de inicio (j)', initial=0, min_value=0)
     hasta = forms.IntegerField(label='iteraciones a mostrar (i)', initial=20, min_value=0)
     # ultimas_filas = forms.IntegerField(label='ultimas filas', initial=10, min_value=0)
-    iteraciones = forms.IntegerField(label='tiempo en minutos (X)', initial=100, min_value=0)
+    iteraciones = forms.FloatField(label='tiempo en minutos (X)', initial=100, min_value=0)
 
     # Interno
     media_int = forms.FloatField(label='media', initial=2, min_value=0)
