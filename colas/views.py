@@ -1,67 +1,8 @@
 from django.shortcuts import render
 from django.views import generic
 
-from .forms import ParametersForm_viejo, ParametersForm
-from .iterador import Iteracion
+from .forms import ParametersForm
 from .final.simulador import Simulador
-
-class Colas_viejo(generic.FormView):
-    form_class = ParametersForm_viejo
-    template_name = 'colas/colas.html'
-
-    def form_valid(self, form):
-        desde = form.cleaned_data['desde']
-        hasta = form.cleaned_data['hasta']
-        ultimas_filas = form.cleaned_data['ultimas_filas']
-
-        # Se genera el iterador con los parametros que indican que valores guardar
-        it = Iteracion(
-            capcacidades=[form.cleaned_data['capacidad_A'], form.cleaned_data['capacidad_B'],
-                          form.cleaned_data['capacidad_C'], form.cleaned_data['capacidad_D']],
-            desde=desde,
-            hasta=hasta,
-            ultimas_filas=ultimas_filas
-        )
-        # Se realizan las simulaciones requeridas
-
-        it.calcular_iteracion(tiempo=int(form.cleaned_data['tiempo']))
-        # print(it.print_tabla(it.tabla))
-        # Mostrar tabla
-        # Divido la tabla en sus 2 partes
-        visitantesA , visitantesB, visitantesC, visitantesD = it.get_visitantes_por_sala()
-        colaA, colaB, colaC, colaD = it.get_numero_lotes_encolados()
-        lotesA, lotesB, lotesC, lotesD = it.get_numero_lotes()
-        #tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_medio_recorrido()
-        tiempoA, tiempoB, tiempoC, tiempoD = it.get_tiempo_espera_cola()
-        pctjeA,pctjeB,pctjeC,pctjeD = it.calcular_porcentaje_lotes_cola()
-        context = {
-            'tabla': it.tabla,
-            'pctjeA': pctjeA,
-            'pctjeB': pctjeB,
-            'pctjeC': pctjeC,
-            'pctjeD': pctjeD,
-            'tiempoA': tiempoA,
-            'tiempoB': tiempoB,
-            'tiempoC': tiempoC,
-            'tiempoD': tiempoD,
-            'visitantesA': visitantesA,
-            'visitantesB': visitantesB,
-            'visitantesC': visitantesC,
-            'visitantesD': visitantesD,
-            # 'tabla_final': it.get_tabla_final(),
-            # 'lotes_final': it.get_matrix(it.get_tabla_final()),
-            'form': form}
-
-        # it.ordenar_tabla_final()
-        tabla = it.tabla + it.tabla_final
-
-        it.limpiar_salas()
-
-        context['tabla'], context['num_lotes'] = it.get_matrix(tabla)
-        tabla.insert(len(it.tabla), {})
-        tabla.insert(len(it.tabla), {})
-
-        return render(self.request, template_name=self.template_name, context=context)
 
 class Colas(generic.FormView):
     form_class = ParametersForm
@@ -82,6 +23,7 @@ class Colas(generic.FormView):
                         max_ext=form.cleaned_data['max_ext'],
                         )
 
+        # Valores de prueba
         # sim.set_rnd(tiempo_llegada_int=[0.0463538119218031, 0.857985064561771, 0.908451102090196, 0.75555589975662,
         #                                 0.735796909342202, 0.350421703262134, 0.35809117433747],
         #             tiempo_llegada_ext=[0.527674118744456, 0.847304643698668, 0.275539224087359, 0.466184990913348],
@@ -108,12 +50,12 @@ class Colas(generic.FormView):
             'perdidas_ext': sim.llamadas_ext_perdidas,
             'totales_int': sim.num_llamada_int_total,
             'totales_ext': sim.num_llamada_ext_total,
-            'porc_int': round(sim.llamadas_int_perdidas / sim.num_llamada_int_total, 4),
-            'porc_ext': round(sim.llamadas_ext_perdidas / sim.num_llamada_ext_total, 4),
+            'porc_int': round((sim.llamadas_int_perdidas / sim.num_llamada_int_total) * 100, 4),
+            'porc_ext': round((sim.llamadas_ext_perdidas / sim.num_llamada_ext_total) * 100, 4),
             'llamadas_total': sim.num_llamada_int_total + sim.num_llamada_ext_total,
             'perdidas_total': sim.llamadas_int_perdidas + sim.llamadas_ext_perdidas,
-            'porc_total': round((sim.llamadas_int_perdidas + sim.llamadas_ext_perdidas) /
-                                (sim.num_llamada_int_total + sim.num_llamada_ext_total), 4)
+            'porc_total': round(((sim.llamadas_int_perdidas + sim.llamadas_ext_perdidas) /
+                                (sim.num_llamada_int_total + sim.num_llamada_ext_total)) * 100, 4)
         }
 
         # tabla.insert(len(it.tabla), {})
